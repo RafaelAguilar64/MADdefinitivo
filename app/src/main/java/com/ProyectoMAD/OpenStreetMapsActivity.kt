@@ -120,7 +120,7 @@ class OpenStreetMapsActivity : AppCompatActivity() {
             marker.title = names[i]
             map.overlays.add(marker)
         }
-        map.overlays.add(polyline)
+        map.overlays.add(polyline) //test
     }
 
 

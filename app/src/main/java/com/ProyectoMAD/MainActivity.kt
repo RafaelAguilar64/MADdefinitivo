@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-        // Check for location permissions
+
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -66,8 +66,6 @@ class MainActivity : AppCompatActivity(), LocationListener {
                 locationPermissionCode
             )
         } else {
-            // The location is updated every 5000 milliseconds (or 5 seconds) and/or if the device moves more than 5 meters,
-            // whichever happens first
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
         }
 
