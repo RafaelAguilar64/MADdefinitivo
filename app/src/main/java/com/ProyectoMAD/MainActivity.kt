@@ -38,15 +38,12 @@ class MainActivity : AppCompatActivity(), LocationListener {
             insets
         }
         buttonOsm.setOnClickListener {
-            if (latestLocation != null) {
+                Log.d(TAG, "Sending location to OpenStreetMapsActivity: ${latestLocation?.latitude}, ${latestLocation?.longitude}")
                 val intent = Intent(this, OpenStreetMapsActivity::class.java)
                 val bundle = Bundle()
                 bundle.putParcelable("location", latestLocation)
                 intent.putExtra("locationBundle", bundle)
                 startActivity(intent)
-            }else{
-                Log.e(TAG, "Location not set yet.")
-            }
         }
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager

@@ -61,6 +61,11 @@ class OpenStreetMapsActivity : AppCompatActivity() {
 
         val bundle = intent.getBundleExtra("locationBundle")
         val location: Location? = bundle?.getParcelable("location")
+        var map: MapView = findViewById(R.id.map)
+
+        map.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK)
+        map.setBuiltInZoomControls(true)
+        map.setMultiTouchControls(true)
 
         val startPoint = if (location != null) {
             Log.d(TAG, "onCreate: Location[${location.altitude}][${location.latitude}][${location.longitude}]")
