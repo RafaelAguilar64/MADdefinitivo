@@ -15,11 +15,13 @@ import org.osmdroid.views.overlay.Marker
 import android.graphics.drawable.BitmapDrawable
 import androidx.core.content.ContextCompat
 import org.osmdroid.views.overlay.Polyline
+import android.content.Context
+
 
 
 class OpenStreetMapsActivity : AppCompatActivity() {
     private val TAG = "btaOpenStreetMapActivity"
-    private lateinit var map: MapView
+    private lateinit var map: org.osmdroid.views.MapView
     val gymkhanaCoords = listOf(
         GeoPoint(40.38779608214728, -3.627687914352839), // Tennis
         GeoPoint(40.38788595319803, -3.627048250272035), // Futsal outdoors
@@ -67,33 +69,33 @@ class OpenStreetMapsActivity : AppCompatActivity() {
             Log.d(TAG, "onCreate: Location is null, using default coordinates")
             GeoPoint(40.389683644051864, -3.627825356970311)
         }
-        val marker = Marker(map)
-        marker.position = startPoint
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-        marker.icon = ContextCompat.getDrawable(this, android.R.drawable.ic_menu_compass) as BitmapDrawable
-        marker.title = "My current location"
-        map.overlays.add(marker)
+        val userMarker = Marker(map)
+        userMarker.position = startPoint
+        userMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        userMarker.icon = ContextCompat.getDrawable(this, android.R.drawable.ic_menu_compass) as BitmapDrawable
+        userMarker.title = "My current location"
+        map.overlays.add(userMarker)
 
         map = findViewById(R.id.map)
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.controller.setZoom(15.0)
         map.controller.setCenter(startPoint)
 
-        val marker = Marker(map)
-        marker.position = startPoint
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-        marker.icon = ContextCompat.getDrawable(this, android.R.drawable.ic_delete) as BitmapDrawable
-        marker.title = "My current location"
-        map.overlays.add(marker)
+        val gymkhanaMarker = Marker(map)
+        gymkhanaMarker.position = startPoint
+        gymkhanaMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        gymkhanaMarker.icon = ContextCompat.getDrawable(this, android.R.drawable.ic_delete) as BitmapDrawable
+        gymkhanaMarker.title = "My current location"
+        map.overlays.add(gymkhanaMarker)
 
         addGymkhanaMarkers(map, gymkhanaCoords, gymkhanaNames, this)
 
-        val marker = Marker(map)
-        marker.position = startPoint
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-        marker.icon = ContextCompat.getDrawable(this, android.R.drawable.ic_delete) as BitmapDrawable
-        marker.title = "My current location"
-        map.overlays.add(marker)
+        val routeMarker = Marker(map)
+        routeMarker.position = startPoint
+        routeMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        routeMarker.icon = ContextCompat.getDrawable(this, android.R.drawable.ic_delete) as BitmapDrawable
+        routeMarker.title = "My current location"
+        map.overlays.add(routeMarker)
 
         addRouteMarkers(map, gymkhanaCoords, gymkhanaNames, this)
 

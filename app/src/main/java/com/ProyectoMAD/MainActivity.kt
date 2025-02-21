@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        Log.d(TAG, "onCreate: Starting maing activity.")
+        Log.d(TAG, "onCreate: Starting main activity.")
         val buttonOsm: Button = findViewById(R.id.osmButton)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
