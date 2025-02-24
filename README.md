@@ -10,3 +10,5 @@ observations. Educational content, including  articles, tips, and quizzes, enhan
 While similar applications exist, EcoTrack stands out by combining pollution monitoring, 
 biodiversity tracking, and environmental education in a single, user-friendly platform. 
 The primary goal of this project is to encourage sustainable habits and promote ecological awareness.
+
+This may undergo changes as we progress in the course.
