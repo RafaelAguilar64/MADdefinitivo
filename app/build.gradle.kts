@@ -48,5 +48,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
 
-    implementation("org.osmdroid:osmdroid-android:6.1.11") //try
+    implementation("org.osmdroid:osmdroid-android:6.1.11")
 }

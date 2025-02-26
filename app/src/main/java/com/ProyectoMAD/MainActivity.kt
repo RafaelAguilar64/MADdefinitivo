@@ -18,12 +18,16 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.app.AlertDialog
 import android.widget.EditText
+import android.widget.Switch
 import android.widget.Toast
+import java.io.File
+
 
 class MainActivity : AppCompatActivity(), LocationListener {
     private val TAG = "btaMainActivity"
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 2
+    private lateinit var locationSwitch: Switch
 
     var latestLocation: Location? = null
 
@@ -54,6 +58,16 @@ class MainActivity : AppCompatActivity(), LocationListener {
         }
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationSwitch = findViewById(R.id.locationSwitch)
+        locationSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                locationSwitch.text = "Disable location"
+                startLocationUpdates()
+            } else {
+                locationSwitch.text = "Enable location"
+                stopLocationUpdates()
+            }
+        }
 
 
         if (ActivityCompat.checkSelfPermission(
@@ -84,6 +98,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
             bundle.putParcelable("location", latestLocation)
             intent.putExtra("locationBundle", bundle)
             startActivity(intent)
+            finish()
         }
         val userIdentifierButton: Button = findViewById(R.id.userIdentifierButton)
         userIdentifierButton.setOnClickListener {
@@ -98,6 +113,28 @@ class MainActivity : AppCompatActivity(), LocationListener {
             Toast.makeText(this, "User ID: $userIdentifier", Toast.LENGTH_LONG).show()
         }
     }
+    private fun startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                locationPermissionCode
+            )
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
+        }
+    }
+    private fun stopLocationUpdates() {
+        locationManager.removeUpdates(this)
+    }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -111,14 +148,23 @@ class MainActivity : AppCompatActivity(), LocationListener {
     }
 
     override fun onLocationChanged(location: Location) {
+        latestLocation = location
         val textView: TextView = findViewById(R.id.mainTextView)
         val locationText = getString(R.string.location_text, location.latitude, location.longitude)
         textView.text = locationText
+        saveCoordinatesToFile(location.latitude, location.longitude, location.altitude, System.currentTimeMillis())
+        val toastText = "New location: ${location.latitude}, ${location.longitude}, ${location.altitude}"
+        Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
-    override fun onProviderEnabled(provider: String) {}
-    override fun onProviderDisabled(provider: String) {}
+    private fun saveCoordinatesToFile(latitude: Double, longitude: Double, altitude: Double, timestamp: Long) {
+        val fileName = "gps_coordinates.csv"
+        val file = File(filesDir, fileName)
+        val formattedLatitude = String.format("%.4f", latitude)
+        val formattedLongitude = String.format("%.4f", longitude)
+        val formattedAltitude = String.format("%.2f", altitude)
+        file.appendText("$timestamp;$formattedLatitude;$formattedLongitude;$formattedAltitude\n")
+    }
 
     private fun showUserIdentifierDialog() {
         val builder = AlertDialog.Builder(this)
@@ -156,5 +202,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
         val sharedPreferences = this.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
         return sharedPreferences.getString("userIdentifier", null)
     }
-
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+    override fun onProviderEnabled(provider: String) {}
+    override fun onProviderDisabled(provider: String) {}
 }
