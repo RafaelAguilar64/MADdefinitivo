@@ -16,6 +16,7 @@ import android.graphics.drawable.BitmapDrawable
 import androidx.core.content.ContextCompat
 import org.osmdroid.views.overlay.Polyline
 import android.content.Context
+import android.widget.Toast
 
 
 
@@ -83,6 +84,8 @@ class OpenStreetMapsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         Log.d(TAG, "onCreate: Starting activity...");
+        Toast.makeText(this, "Welcome to the map", Toast.LENGTH_LONG).show()
+
 
         enableEdgeToEdge()
         setContentView(R.layout.activity_open_street_maps)
