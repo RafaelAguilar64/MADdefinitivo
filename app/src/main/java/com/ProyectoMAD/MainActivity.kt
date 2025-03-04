@@ -21,6 +21,11 @@ import android.widget.EditText
 import android.widget.Switch
 import android.widget.Toast
 import java.io.File
+import com.google.android.material.navigation.NavigationView
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.app.ActionBarDrawerToggle
+import android.view.MenuItem
+import androidx.core.view.GravityCompat
 
 
 class MainActivity : AppCompatActivity(), LocationListener {
@@ -28,6 +33,8 @@ class MainActivity : AppCompatActivity(), LocationListener {
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 2
     private lateinit var locationSwitch: Switch
+
+    private lateinit var drawerLayout: DrawerLayout
 
     var latestLocation: Location? = null
 
@@ -38,12 +45,23 @@ class MainActivity : AppCompatActivity(), LocationListener {
 
         Log.d(TAG, "onCreate: Starting main activity.")
 
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        drawerLayout = findViewById(R.id.drawer_layout)
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        navView.setNavigationItemSelectedListener(this)
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         val buttonOsm: Button = findViewById(R.id.osmButton)
         buttonOsm.setOnClickListener {
             Log.d(
@@ -202,7 +220,32 @@ class MainActivity : AppCompatActivity(), LocationListener {
         val sharedPreferences = this.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
         return sharedPreferences.getString("userIdentifier", null)
     }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_home -> {
+                // Handle home action
+            }
+            R.id.nav_second_activity -> {
+                val intent = Intent(this, SecondActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.nav_open_street_map -> {
+                val intent = Intent(this, OpenStreetMapsActivity::class.java)
+                val bundle = Bundle()
+                bundle.putParcelable("location", latestLocation)
+                intent.putExtra("locationBundle", bundle)
+                startActivity(intent)
+            }
+        }
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
+
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
     override fun onProviderEnabled(provider: String) {}
     override fun onProviderDisabled(provider: String) {}
+
+
 }
