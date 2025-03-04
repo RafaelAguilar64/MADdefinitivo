@@ -143,8 +143,9 @@ class OpenStreetMapsActivity : AppCompatActivity() {
         routeMarker.title = "My current location"
         map.overlays.add(routeMarker)
 
-        addRouteMarkers(map, gymkhanaCoords, gymkhanaNames, this)
-        addRouteMarkers(map, berroMarkers, berroNames, this)
+        addRouteMarkers(map, gymkhanaCoords, gymkhanaNames, this) //ruta UPM
+        addRouteMarkers(map, retiroMarkers, retiroNames, this) //ruta Retiro
+        addRouteMarkers(map, berroMarkers, berroNames, this) //ruta Berro
 
         map.controller.setZoom(18.0)
     }
