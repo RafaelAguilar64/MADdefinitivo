@@ -47,10 +47,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-
     implementation("org.osmdroid:osmdroid-android:6.1.11")
 
-    // Dependence Navigation Drawer
-    implementation("com.google.android.material:material:1.9.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.drawerlayout:drawerlayout:1.1.1")
+
 }

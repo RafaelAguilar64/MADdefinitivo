@@ -1,17 +1,27 @@
 package com.ProyectoMAD
 
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import java.io.IOException
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import android.widget.TextView
+import android.widget.Toast
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 
 class SecondActivity : AppCompatActivity() {
     private val TAG = "btaMainActivity"
@@ -20,6 +30,8 @@ class SecondActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_second)
+
+        Log.d(TAG, "onCreate: The activity is being created.");
 
         Toast.makeText(this, "Showing list of coordinates", Toast.LENGTH_LONG).show()
 
@@ -42,27 +54,67 @@ class SecondActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
         val bundle = intent.getBundleExtra("locationBundle")
         val location: Location? = bundle?.getParcelable<Location>("location")
 
         if (location != null) {
             Log.i(TAG, "onCreate: Location["+location.altitude+"]["+location.latitude+"]["+location.longitude+"][")
         }
-        val tvFileContents: TextView = findViewById(R.id.tvFileContents)
-        tvFileContents.text = readFileContents()
+
+        val listView: ListView = findViewById(R.id.lvCoordinates)
+        val headerView = layoutInflater.inflate(R.layout.listview_header, null)
+        //val headerView = layoutInflater.inflate(R.layout.listview_header, listView, false)
+        listView.addHeaderView(headerView, null, false)
+        // Create adapter of coordiantes. See class below
+        val adapter = CoordinatesAdapter(this, readFileContents())
+        listView.adapter = adapter
+
+
 
     }
-    private fun readFileContents(): String {
+
+    private class CoordinatesAdapter(context: Context, private val coordinatesList: List<List<String>>) :
+        ArrayAdapter<List<String>>(context, R.layout.listview_item, coordinatesList) {
+        private val inflater: LayoutInflater = LayoutInflater.from(context)
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = convertView ?: inflater.inflate(R.layout.listview_item, parent, false)
+            val timestampTextView: TextView = view.findViewById(R.id.tvTimestamp)
+            val latitudeTextView: TextView = view.findViewById(R.id.tvLatitude)
+            val longitudeTextView: TextView = view.findViewById(R.id.tvLongitude)
+            val altitudeTextView: TextView = view.findViewById(R.id.tvAltitude)
+            val item = coordinatesList[position]
+            timestampTextView.text = formatTimestamp(item[0].toLong())
+            latitudeTextView.text = formatCoordinate(item[1].toDouble())
+            longitudeTextView.text = formatCoordinate(item[2].toDouble())
+            altitudeTextView.text = formatCoordinate(item[3].toDouble())
+            view.setOnClickListener {
+                val intent = Intent(context, ThirdActivity::class.java).apply {
+                    putExtra("latitude", item[1])
+                    putExtra("longitude", item[2])
+                    putExtra("altitude", item[2])
+                }
+                context.startActivity(intent)
+            }
+            return view
+        }
+        private fun formatTimestamp(timestamp: Long): String {
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            return formatter.format(Date(timestamp))
+        }
+        private fun formatCoordinate(value: Double): String {
+            return String.format("%.4f", value)
+        }
+    }
+
+    private fun readFileContents(): List<List<String>> {
         val fileName = "gps_coordinates.csv"
         return try {
-            // Open the file from internal storage
             openFileInput(fileName).bufferedReader().useLines { lines ->
-                lines.fold("") { some, text ->
-                    "$some\n$text"
-                }
+                lines.map { it.split(";").map(String::trim) }.toList()
             }
         } catch (e: IOException) {
-            "Error reading file: ${e.message}"
+            listOf(listOf("Error reading file: ${e.message}"))
         }
     }
 }

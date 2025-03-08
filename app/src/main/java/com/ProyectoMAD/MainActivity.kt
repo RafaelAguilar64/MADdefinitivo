@@ -28,7 +28,7 @@ import android.view.MenuItem
 import androidx.core.view.GravityCompat
 
 
-class MainActivity : AppCompatActivity(), LocationListener {
+class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNavigationItemSelectedListener {
     private val TAG = "btaMainActivity"
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 2
@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
         drawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener(this)
+
         val toggle = ActionBarDrawerToggle(
             this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
@@ -130,6 +131,8 @@ class MainActivity : AppCompatActivity(), LocationListener {
             // If yes, use it or show it
             Toast.makeText(this, "User ID: $userIdentifier", Toast.LENGTH_LONG).show()
         }
+
+
     }
     private fun startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(
@@ -174,6 +177,33 @@ class MainActivity : AppCompatActivity(), LocationListener {
         val toastText = "New location: ${location.latitude}, ${location.longitude}, ${location.altitude}"
         Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show()
     }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_home -> {
+                // Handle home action
+            }
+            R.id.nav_second_activity -> {
+                val intent = Intent(this, SecondActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.nav_open_street_map -> {
+                val intent = Intent(this, OpenStreetMapsActivity::class.java)
+                val bundle = Bundle()
+                bundle.putParcelable("location", latestLocation)
+                intent.putExtra("locationBundle", bundle)
+                startActivity(intent)
+            }
+            R.id.nav_settings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+            }
+        }
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
+
 
     private fun saveCoordinatesToFile(latitude: Double, longitude: Double, altitude: Double, timestamp: Long) {
         val fileName = "gps_coordinates.csv"
@@ -221,26 +251,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
         return sharedPreferences.getString("userIdentifier", null)
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.nav_home -> {
-                // Handle home action
-            }
-            R.id.nav_second_activity -> {
-                val intent = Intent(this, SecondActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.nav_open_street_map -> {
-                val intent = Intent(this, OpenStreetMapsActivity::class.java)
-                val bundle = Bundle()
-                bundle.putParcelable("location", latestLocation)
-                intent.putExtra("locationBundle", bundle)
-                startActivity(intent)
-            }
-        }
-        drawerLayout.closeDrawer(GravityCompat.START)
-        return true
-    }
+
 
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
