@@ -2,38 +2,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#386641"
     android:orientation="horizontal"
     android:padding="8dp">
+
     <TextView
         android:id="@+id/header_timestamp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="center"
         android:text="Date/time"
-        android:textStyle="bold"
-        android:gravity="center"/>
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/header_latitude"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="center"
         android:text="Latitude"
-        android:textStyle="bold"
-        android:gravity="center"/>
+        android:textColor="#FDFDFD"
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/header_longitude"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="center"
         android:text="Longitude"
-        android:textStyle="bold"
-        android:gravity="center"/>
+        android:textColor="#FFFDFD"
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/header_altitude"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="center"
         android:text="Altitude"
-        android:textStyle="bold"
-        android:gravity="center"/>
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
 </LinearLayout>
