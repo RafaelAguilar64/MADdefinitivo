@@ -14,7 +14,62 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#BC4749"
         android:text="Go to Second Activity"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginTop="24dp"/>
+
+    <!-- EditText para editar las coordenadas -->
+    <EditText
+        android:id="@+id/etTimestamp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Timestamp"
+        app:layout_constraintTop_toBottomOf="@id/buttonToSecond"
+        android:layout_margin="16dp"/>
+    <EditText
+        android:id="@+id/etLatitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Latitude"
+        app:layout_constraintTop_toBottomOf="@id/etTimestamp"
+        android:layout_margin="16dp"/>
+    <EditText
+        android:id="@+id/etLongitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Longitude"
+        app:layout_constraintTop_toBottomOf="@id/etLatitude"
+        android:layout_margin="16dp"/>
+    <EditText
+        android:id="@+id/etAltitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Altitude"
+        app:layout_constraintTop_toBottomOf="@id/etLongitude"
+        android:layout_margin="16dp"/>
+    <!-- Botón para actualizar coordenadas -->
+    <Button
+        android:id="@+id/buttonUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update Coordinates"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#00FF00"
+        app:layout_constraintTop_toBottomOf="@id/etAltitude"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"/>
+    <!-- Botón para eliminar el registro -->
+    <Button
+        android:id="@+id/buttonDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Coordinate"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#D32F2F"
+        app:layout_constraintTop_toBottomOf="@id/buttonUpdate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,12 @@ import androidx.core.content.ContextCompat
 import org.osmdroid.views.overlay.Polyline
 import android.content.Context
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import com.ProyectoMAD.room.AppDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 
 
 
@@ -132,9 +138,6 @@ class OpenStreetMapsActivity : AppCompatActivity() {
         gymkhanaMarker.title = "My current location"
         map.overlays.add(gymkhanaMarker)
 
-        addGymkhanaMarkers(map, gymkhanaCoords, gymkhanaNames, this)
-        addGymkhanaMarkers(map, retiroMarkers, retiroNames, this)
-        addGymkhanaMarkers(map, berroMarkers, berroNames, this)
 
         val routeMarker = Marker(map)
         routeMarker.position = startPoint
@@ -147,18 +150,36 @@ class OpenStreetMapsActivity : AppCompatActivity() {
         addRouteMarkers(map, retiroMarkers, retiroNames, this) //ruta Retiro
         addRouteMarkers(map, berroMarkers, berroNames, this) //ruta Berro
 
+        loadDatabaseMarkers()
+
         map.controller.setZoom(18.0)
     }
-    fun addGymkhanaMarkers(map: MapView, coords: List<GeoPoint>, names: List<String>, context: Context) {
-        for (i in coords.indices) {
+
+    private fun loadDatabaseMarkers() {
+        val db = AppDatabase.getDatabase(this)
+        lifecycleScope.launch(Dispatchers.IO) {
+            val dbCoordinates = db.coordinatesDao().getAll()
+            val roomGeoPoints = dbCoordinates.map {
+                GeoPoint(it.latitude, it.longitude)
+            }
+            Log.d(TAG, "Coordenadas obtenidas de Room: $roomGeoPoints")
+            withContext(Dispatchers.Main) {
+                addDatabaseMarkers(map, roomGeoPoints, this@OpenStreetMapsActivity)
+            }
+        }
+    }
+
+    private fun addDatabaseMarkers(map: MapView, coords: List<GeoPoint>, context: Context) {
+        for (geoPoint in coords) {
             val marker = Marker(map)
-            marker.position = coords[i]
+            marker.position = geoPoint
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            marker.icon = ContextCompat.getDrawable(context, android.R.drawable.ic_menu_compass) as BitmapDrawable
-            marker.title = names[i]
+            marker.icon = ContextCompat.getDrawable(context, android.R.drawable.ic_delete) as BitmapDrawable
+            marker.title = "Saved Coordinate"
             map.overlays.add(marker)
         }
     }
+
     fun addRouteMarkers(map: MapView, coords: List<GeoPoint>, names: List<String>, context: Context) {
         val polyline = Polyline()
         polyline.setPoints(coords)
@@ -172,6 +193,10 @@ class OpenStreetMapsActivity : AppCompatActivity() {
         }
         map.overlays.add(polyline) //test
     }
-
+    override fun onBackPressed() {
+        super.onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
+        finish()
+    }
 
 }
