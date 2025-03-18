@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
     private lateinit var drawerLayout: DrawerLayout
 
     var latestLocation: Location? = null
-    private val API_KEY = "..."
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,18 +77,6 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val buttonOsm: Button = findViewById(R.id.osmButton)
-        buttonOsm.setOnClickListener {
-            Log.d(
-                TAG,
-                "Sending location to OpenStreetMapsActivity: ${latestLocation?.latitude}, ${latestLocation?.longitude}"
-            )
-            val intent = Intent(this, OpenStreetMapsActivity::class.java)
-            val bundle = Bundle()
-            bundle.putParcelable("location", latestLocation)
-            intent.putExtra("locationBundle", bundle)
-            startActivity(intent)
-        }
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         weatherIcon = findViewById(R.id.weatherIcon)
@@ -125,16 +112,6 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
         }
 
-        // Set up button click listener
-        val navigateButton: Button = findViewById(R.id.navigateButton)
-        navigateButton.setOnClickListener {
-            val intent = Intent(this, SecondActivity::class.java)
-            val bundle = Bundle()
-            bundle.putParcelable("location", latestLocation)
-            intent.putExtra("locationBundle", bundle)
-            startActivity(intent)
-            finish()
-        }
         val userIdentifierButton: Button = findViewById(R.id.userIdentifierButton)
         userIdentifierButton.setOnClickListener {
             showUserIdentifierDialog()

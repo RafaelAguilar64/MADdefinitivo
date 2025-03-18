@@ -12,15 +12,15 @@
         android:id="@+id/editTextUserIdentifier"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:hint="Enter User Identifier"
         android:minHeight="48dp"
         android:paddingVertical="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:hint="Enter User Identifier"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp" />
 
     <EditText
         android:id="@+id/editTextApiKey"
@@ -40,11 +40,11 @@
         android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#BC4749"
         android:text="Save"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="#BC4749"
+        app:layout_constraintTop_toBottomOf="@id/editTextApiKey"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextUserIdentifier" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
