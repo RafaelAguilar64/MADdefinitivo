@@ -16,75 +16,33 @@ import android.graphics.drawable.BitmapDrawable
 import androidx.core.content.ContextCompat
 import org.osmdroid.views.overlay.Polyline
 import android.content.Context
+import android.content.Intent
+import android.widget.Button
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
+import com.ProyectoMAD.network.WeatherApiService
+import com.ProyectoMAD.network.WeatherResponse
 import com.ProyectoMAD.room.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
-
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import com.google.android.gms.location.LocationServices
+import android.Manifest
+import android.content.pm.PackageManager
+import kotlin.collections.get
+import kotlin.compareTo
 
 
 class OpenStreetMapsActivity : AppCompatActivity() {
     private val TAG = "btaOpenStreetMapActivity"
     private lateinit var map: org.osmdroid.views.MapView
-    val gymkhanaCoords = listOf(
-        GeoPoint(40.38779608214728, -3.627687914352839), // Tennis
-        GeoPoint(40.38788595319803, -3.627048250272035), // Futsal outdoors
-        GeoPoint(40.3887315224542, -3.628643539758645), // Fashion and design
-        GeoPoint(40.38926842612264, -3.630067893975619), // Topos
-        GeoPoint(40.38956358584258, -3.629046081389352), // Teleco
-        GeoPoint(40.38992125672989, -3.6281366497769714), // ETSISI
-        GeoPoint(40.39037466191718, -3.6270256763598447), // Library
-        GeoPoint(40.389855884803005, -3.626782180787362) // CITSEM
-    )
-    val retiroMarkers = listOf(
-        GeoPoint(40.42117535604317, -3.680401468693263), //Montaña artificial
-        GeoPoint(40.42061417242487, -3.6810108904829124), //Casita del Pescador
-        GeoPoint(40.418760474710574, -3.685308337528424), //Fuente de los Galápagos
-        GeoPoint(40.41948863633951, -3.6872932972242913), //Paseo de México
-        GeoPoint(40.41525783875198, -3.687802338144712), //Jardín del Parterre
-        GeoPoint(40.4171343534008, -3.683909791107988), //Estanque Grande del Retiro
-        GeoPoint(40.41209021987538, -3.6871366611675906), //Bosque del Recuerdo
-        GeoPoint(40.40838225487468, -3.678519994560459), //Puerta de Mariano de Cavia
-        GeoPoint(40.41079474417153, -3.680315379632557), //La Rosaleda (Cecilio Rodríguez)
-        GeoPoint(40.41359592139659, -3.6819739132752844), //Palacio de Cristal
-        GeoPoint(40.41330744341854, -3.678005171232507), //Jardines de Cecilio Rodríguez
-        GeoPoint(40.415571513393296, -3.6787337586579363) //Jardines de Herrero de Palacios
-    )
-    val retiroNames = listOf(
-        "Montaña artificial",
-        "Casita del Pescador",
-        "Fuente de los Galápagos",
-        "Paseo de México",
-        "Jardín del Parterre",
-        "Estanque Grande del Retiro",
-        "Bosque del Recuerdo",
-        "Puerta de Mariano de Cavia",
-        "La Rosaleda (Cecilio Rodríguez)",
-        "Palacio de Cristal",
-        "Jardines de Cecilio Rodríguez",
-        "Jardines de Herrero de Palacios"
-    )
-    val berroMarkers = listOf(
-        GeoPoint(40.422598290025114, -3.6627296111863354), //Centro cultural Quinta del Berro
-        GeoPoint(40.42207086085666, -3.6602394414882493) //Ginko Biloba
-    )
-    val berroNames = listOf(
-        "Centro cultural Quinta del Berro",
-        "Ginko Biloba"
-    )
-    val gymkhanaNames = listOf(
-        "Tennis",
-        "Futsal outdoors",
-        "Fashion and design school",
-        "Topography school",
-        "Telecommunications school",
-        "ETSISI",
-        "Library",
-        "CITSEM"
-    )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,13 +104,102 @@ class OpenStreetMapsActivity : AppCompatActivity() {
         routeMarker.title = "My current location"
         map.overlays.add(routeMarker)
 
-        addRouteMarkers(map, gymkhanaCoords, gymkhanaNames, this) //ruta UPM
-        addRouteMarkers(map, retiroMarkers, retiroNames, this) //ruta Retiro
-        addRouteMarkers(map, berroMarkers, berroNames, this) //ruta Berro
-
         loadDatabaseMarkers()
 
+        val buttonComprobar: Button = findViewById(R.id.comprobarCoordenadas)
+        buttonComprobar.setOnClickListener {
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                // Obtener la ubicación actual
+                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                    if (location != null) {
+                        val latitude = location.latitude
+                        val longitude = location.longitude
+                        Log.d(TAG, "Ubicación actual: Lat=$latitude, Lon=$longitude")
+
+                        // Llamar a la API con las coordenadas obtenidas
+                        val apiKey = "04368c208661530d8b90a96114b2487b"
+                        val retrofit = Retrofit.Builder()
+                            .baseUrl("https://api.openweathermap.org/data/2.5/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build()
+                        val service = retrofit.create(WeatherApiService::class.java)
+
+                        val call = service.getWeatherForecast(latitude, longitude, 1, apiKey)
+                        call.enqueue(object : Callback<WeatherResponse> {
+                            override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>) {
+                                if (response.isSuccessful) {
+                                    val weatherResponse = response.body()
+                                    weatherResponse?.let {
+                                        val tempCelsius = it.list[0].main.temp - 273.15 // Convertir de Kelvin a Celsius
+                                        val humidity = it.list[0].main.humidity
+
+                                        // Verificar las condiciones
+                                        if (tempCelsius in 12.0..18.0 && humidity >= 60) {
+                                            Toast.makeText(this@OpenStreetMapsActivity, "Se dan las condiciones necesarias", Toast.LENGTH_SHORT).show()
+                                        } else {
+                                            Toast.makeText(this@OpenStreetMapsActivity, "No se dan las condiciones necesarias", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                } else {
+                                    Log.e(TAG, "Error en la respuesta: ${response.code()}")
+                                    Toast.makeText(this@OpenStreetMapsActivity, "Error al obtener datos del clima", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+
+                            override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
+                                Log.e(TAG, "Error en la petición: ${t.message}")
+                                Toast.makeText(this@OpenStreetMapsActivity, "Error al conectar con la API", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                    } else {
+                        Toast.makeText(this, "No se pudo obtener la ubicación", Toast.LENGTH_SHORT).show()
+                    }
+                }.addOnFailureListener {
+                    Log.e(TAG, "Error al obtener la ubicación: ${it.message}")
+                    Toast.makeText(this, "Error al obtener la ubicación", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                // Solicitar permisos si no están concedidos
+                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), 1001)
+            }
+        }
+
+
+
         map.controller.setZoom(18.0)
+    }
+
+    private fun getApiData(lat: Double, lon: Double) {
+        val apiKey = "04368c208661530d8b90a96114b2487b"
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://api.openweathermap.org/data/2.5/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val service = retrofit.create(WeatherApiService::class.java)
+
+        val call = service.getWeatherForecast(lat, lon, 1, apiKey)
+        call.enqueue(object : Callback<WeatherResponse> {
+            override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>) {
+                if (response.isSuccessful) {
+                    val weatherResponse = response.body()
+                    weatherResponse?.let {
+                        Log.d(TAG, "Datos del clima: $it")
+                        Toast.makeText(this@OpenStreetMapsActivity, "Clima obtenido: ${it.list[0].main.temp}", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Log.e(TAG, "Error en la respuesta: ${response.code()}")
+                    Toast.makeText(this@OpenStreetMapsActivity, "Error al obtener datos del clima", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
+                Log.e(TAG, "Error en la petición: ${t.message}")
+                Toast.makeText(this@OpenStreetMapsActivity, "Error al conectar con la API", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun loadDatabaseMarkers() {
@@ -164,7 +211,7 @@ class OpenStreetMapsActivity : AppCompatActivity() {
             }
             Log.d(TAG, "Coordenadas obtenidas de Room: $roomGeoPoints")
             withContext(Dispatchers.Main) {
-                addDatabaseMarkers(map, roomGeoPoints, this@OpenStreetMapsActivity)
+                //addDatabaseMarkers(map, roomGeoPoints, this@OpenStreetMapsActivity)
             }
         }
     }
