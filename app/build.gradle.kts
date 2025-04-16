@@ -65,6 +65,9 @@ dependencies {
 
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 
+    implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.firebaseui:firebase-ui-auth:8.0.2") // UI para login
     //
 
 }

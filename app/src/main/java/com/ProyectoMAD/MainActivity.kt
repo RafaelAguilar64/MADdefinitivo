@@ -38,6 +38,11 @@ import android.widget.ImageView
 import com.ProyectoMAD.network.WeatherApiService
 import com.ProyectoMAD.network.WeatherResponse
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.IdpResponse
+import android.app.Activity
+
 
 
 class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNavigationItemSelectedListener {
@@ -51,6 +56,7 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
     private lateinit var drawerLayout: DrawerLayout
 
     var latestLocation: Location? = null
+    private val API_KEY ="04368c208661530d8b90a96114b2487b"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

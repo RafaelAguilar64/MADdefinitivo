@@ -96,7 +96,6 @@ class OpenStreetMapsActivity : AppCompatActivity() {
         gymkhanaMarker.title = "My current location"
         map.overlays.add(gymkhanaMarker)
 
-
         val routeMarker = Marker(map)
         routeMarker.position = startPoint
         routeMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)

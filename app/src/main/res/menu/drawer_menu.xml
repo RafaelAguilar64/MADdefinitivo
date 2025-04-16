@@ -1,4 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/baseline_maps_home_work_24"
@@ -15,4 +16,5 @@
         android:id="@+id/nav_settings"
         android:icon="@drawable/baseline_app_settings_alt_24"
         android:title="Settings" />
+
 </menu>
