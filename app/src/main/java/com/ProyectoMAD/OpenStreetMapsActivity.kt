@@ -167,7 +167,10 @@ class OpenStreetMapsActivity : AppCompatActivity() {
             }
         }
 
+        val buttonAddMarker: Button = findViewById(R.id.addMarker)
+        buttonComprobar.setOnClickListener{
 
+        }
 
         map.controller.setZoom(18.0)
     }
