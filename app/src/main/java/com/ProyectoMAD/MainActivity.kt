@@ -19,7 +19,6 @@ import androidx.core.view.WindowInsetsCompat
 import android.app.AlertDialog
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.view.Menu
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.Toast
@@ -39,7 +38,6 @@ import android.widget.ImageView
 import com.ProyectoMAD.network.WeatherApiService
 import com.ProyectoMAD.network.WeatherResponse
 import com.bumptech.glide.Glide
-import kotlin.apply
 import com.google.firebase.auth.FirebaseAuth
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
@@ -53,15 +51,12 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
     private val locationPermissionCode = 2
     private lateinit var locationSwitch: Switch
     private lateinit var weatherTextView: TextView
-    private lateinit var auth: FirebaseAuth
+    private lateinit var weatherIcon: ImageView
 
     private lateinit var drawerLayout: DrawerLayout
 
     var latestLocation: Location? = null
-
-    companion object {
-        private const val RC_SIGN_IN = 123
-    }
+    private val API_KEY ="04368c208661530d8b90a96114b2487b"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +85,7 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
 
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        weatherIcon = findViewById(R.id.weatherIcon)
         locationSwitch = findViewById(R.id.locationSwitch)
         locationSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -136,11 +132,7 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
         }
         getWeatherForecast(40.38982289563083, -3.627826205293675)
 
-        // Init authentication flow
-        launchSignInFlow()
-
     }
-
     private fun startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -152,99 +144,16 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
         ) {
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
                 locationPermissionCode
             )
         } else {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
         }
     }
-
     private fun stopLocationUpdates() {
         locationManager.removeUpdates(this)
     }
-
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.drawer_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.nav_settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
-                true
-            }
-
-            R.id.action_logout -> {
-                logout()
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SIGN_IN) {
-            val response = IdpResponse.fromResultIntent(data)
-            if (resultCode == Activity.RESULT_OK) {
-                // user login succeeded
-                val user = FirebaseAuth.getInstance().currentUser
-                Toast.makeText(this, R.string.signed_in, Toast.LENGTH_SHORT).show();
-                Log.i(TAG, "onActivityResult " + getString(R.string.signed_in));
-            } else {
-                // user login failed
-                Log.e(TAG, "Error starting auth session: ${response?.error?.errorCode}")
-                Toast.makeText(this, R.string.signed_cancelled, Toast.LENGTH_SHORT).show();
-                finish()
-            }
-        }
-    }
-
-    private fun launchSignInFlow() {
-        val providers = arrayListOf(
-            AuthUI.IdpConfig.EmailBuilder().build(),
-            AuthUI.IdpConfig.GoogleBuilder().build()
-        )
-        startActivityForResult(
-            AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(providers)
-                .build(),
-            RC_SIGN_IN
-        )
-    }
-
-    private fun logout() {
-        AuthUI.getInstance()
-            .signOut(this)
-            .addOnCompleteListener {
-                // Restart activity after finishing
-                val intent = Intent(this, MainActivity::class.java)
-                // Clean back stack so that user cannot retake activity after logout
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
-            }
-    }
-
-    private fun updateUIWithUsername() {
-        val user = FirebaseAuth.getInstance().currentUser
-        val userNameTextView: TextView = findViewById(R.id.logIn)
-        user?.let {
-            val name = user.displayName ?: "No Name"
-            userNameTextView.text = "\uD83E\uDD35\u200D♂\uFE0F " + name
-        }
-    }
-
-
-
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -272,7 +181,6 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
 
     override fun onResume() {
         super.onResume()
-        updateUIWithUsername()
         val lat: Double
         val lon: Double
         if (latestLocation != null) {
@@ -342,6 +250,8 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
             weatherText.append("🌡 Temp: $tempFormatted°C\n")
             weatherText.append("💨 Wind: ${item.weather[0].description}\n")
             weatherText.append("🌫 Humidity: ${item.main.humidity}%\n\n")
+
+            Glide.with(this).load(iconUrl).into(weatherIcon)
         }
         weatherTextView.text = weatherText.toString()
     }
@@ -383,6 +293,7 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
+
 
 
     private fun saveCoordinatesToFile(latitude: Double, longitude: Double, altitude: Double, timestamp: Long) {

@@ -21,22 +21,11 @@
 
     <Button
         android:id="@+id/comprobarCoordenadas"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test Coordinates"
+        android:text="Comprobar coordenadas"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/aniadirMarcador"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/addMarker"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Add marker"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/comprobarCoordenadas"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
