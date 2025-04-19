@@ -35,6 +35,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import com.google.android.gms.location.LocationServices
 import android.Manifest
 import android.content.pm.PackageManager
+import android.widget.EditText
+import com.ProyectoMAD.room.CoordinatesEntity
 import kotlin.collections.get
 import kotlin.compareTo
 
@@ -135,11 +137,113 @@ class OpenStreetMapsActivity : AppCompatActivity() {
                                         val tempCelsius = it.list[0].main.temp - 273.15 // Convertir de Kelvin a Celsius
                                         val humidity = it.list[0].main.humidity
 
+                                        // Mostrar mensaje con temperatura y humedad
+                                        Toast.makeText(
+                                            this@OpenStreetMapsActivity,
+                                            "Temperatura: ${"%.2f".format(tempCelsius)}°C, Humedad: $humidity%",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
                                         // Verificar las condiciones
                                         if (tempCelsius in 12.0..18.0 && humidity >= 60) {
                                             Toast.makeText(this@OpenStreetMapsActivity, "Se dan las condiciones necesarias", Toast.LENGTH_SHORT).show()
                                         } else {
                                             Toast.makeText(this@OpenStreetMapsActivity, "No se dan las condiciones necesarias", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                } else {
+                                    Log.e(TAG, "Error en la respuesta: ${response.code()}")
+                                    Toast.makeText(this@OpenStreetMapsActivity, "Error al obtener datos del clima", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+
+                            override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
+                                Log.e(TAG, "Error en la petición: ${t.message}")
+                                Toast.makeText(this@OpenStreetMapsActivity, "Error al conectar con la API", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                    } else {
+                        Toast.makeText(this, "No se pudo obtener la ubicación", Toast.LENGTH_SHORT).show()
+                    }
+                }.addOnFailureListener {
+                    Log.e(TAG, "Error al obtener la ubicación: ${it.message}")
+                    Toast.makeText(this, "Error al obtener la ubicación", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                // Solicitar permisos si no están concedidos
+                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), 1001)
+            }
+        }
+
+        val buttonAddMarker: Button = findViewById(R.id.addMarker)
+        buttonAddMarker.setOnClickListener {
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                // Obtener la ubicación actual
+                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                    if (location != null) {
+                        val latitude = location.latitude
+                        val longitude = location.longitude
+                        Log.d(TAG, "Ubicación actual: Lat=$latitude, Lon=$longitude")
+
+                        // Comprobar si las coordenadas son óptimas
+                        val apiKey = "04368c208661530d8b90a96114b2487b"
+                        val retrofit = Retrofit.Builder()
+                            .baseUrl("https://api.openweathermap.org/data/2.5/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build()
+                        val service = retrofit.create(WeatherApiService::class.java)
+
+                        val call = service.getWeatherForecast(latitude, longitude, 1, apiKey)
+                        call.enqueue(object : Callback<WeatherResponse> {
+                            override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>) {
+                                if (response.isSuccessful) {
+                                    val weatherResponse = response.body()
+                                    weatherResponse?.let {
+                                        val tempCelsius = it.list[0].main.temp - 273.15 // Convertir de Kelvin a Celsius
+                                        val humidity = it.list[0].main.humidity
+
+                                        if (tempCelsius in 12.0..18.0 && humidity >= 60) {
+                                            // Mostrar cuadro de diálogo para nombre y descripción
+                                            val dialogView = layoutInflater.inflate(R.layout.dialog_add_marker, null)
+                                            val dialog = androidx.appcompat.app.AlertDialog.Builder(this@OpenStreetMapsActivity)
+                                                .setTitle("Añadir marcador")
+                                                .setView(dialogView)
+                                                .setPositiveButton("Guardar") { _, _ ->
+                                                    val name = dialogView.findViewById<EditText>(R.id.markerName).text.toString()
+                                                    val description = dialogView.findViewById<EditText>(R.id.markerDescription).text.toString()
+
+                                                    // Añadir marcador al mapa
+                                                    val marker = Marker(map)
+                                                    marker.position = GeoPoint(latitude, longitude)
+                                                    marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                                                    marker.title = name
+                                                    marker.snippet = description
+                                                    map.overlays.add(marker)
+
+                                                    // Guardar en la base de datos
+                                                    val db = AppDatabase.getDatabase(this@OpenStreetMapsActivity)
+                                                    lifecycleScope.launch(Dispatchers.IO) {
+                                                        db.coordinatesDao().insert(
+                                                            CoordinatesEntity(
+                                                                timestamp = System.currentTimeMillis(),
+                                                                latitude = latitude,
+                                                                longitude = longitude,
+                                                                altitude = location.altitude,
+                                                                name = name,
+                                                                description = description
+                                                            )
+                                                        )
+                                                    }
+                                                    Toast.makeText(this@OpenStreetMapsActivity, "Marcador añadido", Toast.LENGTH_SHORT).show()
+                                                }
+                                                .setNegativeButton("Cancelar", null)
+                                                .create()
+                                            dialog.show()
+                                        } else {
+                                            Toast.makeText(this@OpenStreetMapsActivity, "Las coordenadas no son óptimas", Toast.LENGTH_SHORT).show()
                                         }
                                     }
                                 } else {

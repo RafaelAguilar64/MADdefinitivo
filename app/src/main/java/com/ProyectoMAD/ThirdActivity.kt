@@ -132,7 +132,9 @@ class ThirdActivity : AppCompatActivity() {
                     timestamp = timestamp, // Mantiene el mismo timestamp
                     latitude = etLatitude.text.toString().toDouble(),
                     longitude = etLongitude.text.toString().toDouble(),
-                    altitude = etAltitude.text.toString().toDouble()
+                    altitude = etAltitude.text.toString().toDouble(),
+                    name = existingCoordinate.name,
+                    description = existingCoordinate.description
                 )
                 db.coordinatesDao().updateCoordinate(updatedCoordinate)
                 Log.d(TAG, "✅ Coordinate updated: $updatedCoordinate")

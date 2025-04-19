@@ -261,7 +261,9 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
             timestamp = timestamp,
             latitude = latitude,
             longitude = longitude,
-            altitude = altitude
+            altitude = altitude,
+            name = "Default Name",
+            description = "Default Description"
         )
         val db = AppDatabase.getDatabase(this)
         lifecycleScope.launch {
