@@ -58,6 +58,10 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
     var latestLocation: Location? = null
     private val API_KEY ="04368c208661530d8b90a96114b2487b"
 
+    enum class ProviderType{
+        BASIC
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -288,6 +292,13 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
             R.id.nav_settings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
+            }
+            R.id.log_out -> {
+                FirebaseAuth.getInstance().signOut()
+                val intent = Intent(this, authActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
