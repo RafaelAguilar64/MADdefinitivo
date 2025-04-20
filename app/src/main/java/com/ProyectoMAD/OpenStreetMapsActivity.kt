@@ -146,7 +146,7 @@ class OpenStreetMapsActivity : AppCompatActivity() {
                                         ).show()
 
                                         // Verificar las condiciones
-                                        if (tempCelsius in 12.0..18.0 && humidity >= 60) {
+                                        if (tempCelsius in 10.0..21.0 && humidity >= 40) {
                                             Toast.makeText(this@OpenStreetMapsActivity, "Se dan las condiciones necesarias", Toast.LENGTH_SHORT).show()
                                         } else {
                                             Toast.makeText(this@OpenStreetMapsActivity, "No se dan las condiciones necesarias", Toast.LENGTH_SHORT).show()

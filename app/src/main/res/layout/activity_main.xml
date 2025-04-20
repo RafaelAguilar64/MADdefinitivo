@@ -30,7 +30,7 @@
             android:id="@+id/weatherTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="40dp"
             android:gravity="center"
             android:padding="8dp"
             android:text="Weather information will appear here"
@@ -40,16 +40,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/mainTextView" />
 
+
+        <TextView
+            android:id="@+id/appDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_marginTop="164dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="139dp"
+            android:gravity="center"
+            android:text="Con esta app puedes ayudar al repoblamiento de la Gambilusa, un pequeño camarón de agua dulce. Usa el GPS para marcar posibles sitios donde pueda vivir y envía tu propuesta.                                                                                                          ¡Tu contribución ayuda a restaurar ecosistemas!"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:fontFamily="@font/baloo2"
+            app:layout_constraintBottom_toTopOf="@+id/locationSwitch"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weatherIcon" />
+
         <ImageView
             android:id="@+id/weatherIcon"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="56dp"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/weatherTextView" />
-
 
         <Switch
             android:id="@+id/locationSwitch"
@@ -61,7 +80,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weatherIcon" />
+            app:layout_constraintTop_toBottomOf="@+id/appDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
