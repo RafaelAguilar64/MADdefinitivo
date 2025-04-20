@@ -48,31 +48,42 @@ This feature is currently under development, and the form is not yet fully funct
   <tr>
     <td>
       <img src="https://raw.githubusercontent.com/RafaelAguilar64/MADdefinitivo/main/images/authentication.PNG" width="80%" alt="Pantalla de autenticación"/>
+      <p align="center">Log In/Register activity(Authenticaction)</p>
+    </td>
+    <td>
+      <img src="https://raw.githubusercontent.com/RafaelAguilar64/MADdefinitivo/main/images/main.PNG" width="80%" alt="Describe here image 2"/>
       <p align="center">Main activity of the app</p>
     </td>
+  </tr>
+  <tr>
     <td>
-      <img src="img/nav2.png" width="80%" alt="Describe here image 2"/>
-      <p align="center">Describe here image 2</p>
+      <img src="https://raw.githubusercontent.com/RafaelAguilar64/MADdefinitivo/main/images/drawermenu.PNG" width="80%" alt="Describe here image 3"/>
+      <p align="center">Drawer menu of the app</p>
+    </td>
+    <td>
+      <img src="https://raw.githubusercontent.com/RafaelAguilar64/MADdefinitivo/main/images/openstreetmaps.PNG" width="80%" alt="Describe here image 4"/>
+      <p align="center">Map and GPS usage activity</p>
     </td>
   </tr>
   <tr>
     <td>
-      <img src="img/nav3.png" width="80%" alt="Describe here image 3"/>
-      <p align="center">Describe here image 3</p>
+      <img src="https://raw.githubusercontent.com/RafaelAguilar64/MADdefinitivo/main/images/secondactivity.PNG" width="80%" alt="Describe here image 5"/>
+      <p align="center">List of coordinates</p>
     </td>
     <td>
-      <img src="img/nav4.png" width="80%" alt="Describe here image 4"/>
-      <p align="center">Describe here image 4</p>
     </td>
   </tr>
   <tr>
     <td>
-      <img src="img/nav6.png" width="80%" alt="Describe here image 5"/>
-      <p align="center">Describe here image 5</p>
+      <img src="https://raw.githubusercontent.com/RafaelAguilar64/MADdefinitivo/main/images/thirdactivity.PNG" width="80%" alt="Pantalla de autenticación"/>
+      <p align="center">Update and Delete coordinates activity</p>
     </td>
     <td>
+      <img src="https://raw.githubusercontent.com/RafaelAguilar64/MADdefinitivo/main/images/reportinfo.PNG" width="80%" alt="Describe here image 2"/>
+      <p align="center">Report information activity</p>
     </td>
   </tr>
+  
 </table>
 
 ## Demo Video
@@ -93,4 +104,10 @@ List of **functional** features of the app.
 - Sensors: GPS coordinates
 - Firebase Realtime database
 - Persistence in Room database. Ref: https://github.com/RafaelAguilar64/MADdefinitivo/tree/main/app/src/main/java/com/ProyectoMAD/room
-  
+
+## How to Use
+
+## Participants
+List of MAD developers:
+Rafael Aguilar Martinez-Peñalver(rafael.aguilar@alumunos.upm.es)
+Sergio Alonso Vicente (sergio.alonsov@alumunos.upm.es)
