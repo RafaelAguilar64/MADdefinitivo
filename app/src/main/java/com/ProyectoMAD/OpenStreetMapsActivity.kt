@@ -37,6 +37,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.widget.EditText
 import com.ProyectoMAD.room.CoordinatesEntity
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.collections.get
 import kotlin.compareTo
 
@@ -205,7 +206,7 @@ class OpenStreetMapsActivity : AppCompatActivity() {
                                         val tempCelsius = it.list[0].main.temp - 273.15 // Convertir de Kelvin a Celsius
                                         val humidity = it.list[0].main.humidity
 
-                                        if (tempCelsius in 12.0..18.0 && humidity >= 60) {
+                                        if (tempCelsius in 10.0..21.0 && humidity >= 40) {
                                             // Mostrar cuadro de diálogo para nombre y descripción
                                             val dialogView = layoutInflater.inflate(R.layout.dialog_add_marker, null)
                                             val dialog = androidx.appcompat.app.AlertDialog.Builder(this@OpenStreetMapsActivity)

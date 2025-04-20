@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         weatherIcon = findViewById(R.id.weatherIcon)
+        weatherTextView = findViewById(R.id.weatherTextView)
         locationSwitch = findViewById(R.id.locationSwitch)
         locationSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -220,7 +221,7 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val service = retrofit.create(WeatherApiService::class.java)
-        val call = service.getWeatherForecast(lat, lon, 1, apiKey)
+        val call = service.getWeatherForecast(lat, lon, 1, API_KEY)
         call.enqueue(object : Callback<WeatherResponse> {
             override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>) {
                 if (response.isSuccessful) {
@@ -228,6 +229,7 @@ class MainActivity : AppCompatActivity(), LocationListener, NavigationView.OnNav
                     weatherResponse?.let { showWeatherInfo(it) }
                 } else {
                     Log.e(TAG, "Error en la respuesta: ${response.code()}")
+                    Log.e(TAG, "Response body: ${response.errorBody()?.string()}")
                     Toast.makeText(this@MainActivity, "Failed to fetch weather", Toast.LENGTH_SHORT).show()
                 }
             }
