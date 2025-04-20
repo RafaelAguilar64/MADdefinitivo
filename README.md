@@ -88,8 +88,8 @@ This feature is currently under development, and the form is not yet fully funct
 
 ## Demo Video
 
-<a href="https://www.youtube.com/watch?v=mvvYGKihuug">
-</a>
+a href="https://www.youtube.com/watch?v=mvvYGKihuug"
+
 
 ## Features
 List of **functional** features of the app.
