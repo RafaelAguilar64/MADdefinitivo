@@ -107,6 +107,26 @@ List of **functional** features of the app.
 
 ## How to Use
 
+How to Use the Application
+1. Install the Application  
+  Download and install the APK file provided by the developer on your Android device.
+2. Grant Permissions  
+  When you open the app for the first time, it will request location permissions. Grant the necessary permissions to allow the app to access your location.
+3. Main Features  
+  View Map: The main screen displays a map where you can see your current location.
+  Test Coordinates: Use the "Test Coordinates" button to interact with and test location data.
+  View Saved Locations: Navigate to the list of saved coordinates by accessing the second activity.
+  Detailed View: Tap on a saved coordinate to view detailed information, such as timestamp, latitude, longitude, and altitude.
+4. Navigation  
+  Use the buttons at the bottom of the screen to navigate between different activities:
+    -Go to Report Info: Access additional information or reports.
+    -Back to Main: Return to the main activity.
+5. Save and View Locations  
+  The app automatically saves your location data, which you can view in the list of saved coordinates.
+6. Additional Features
+  The app integrates weather forecasts based on your location.
+  You can export or view location data for further use.
+
 ## Participants
 List of MAD developers:
 Rafael Aguilar Martinez-Peñalver(rafael.aguilar@alumunos.upm.es)
