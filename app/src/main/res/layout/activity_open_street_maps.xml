@@ -22,27 +22,35 @@
 
     <Button
         android:id="@+id/comprobarCoordenadas"
-        android:layout_width="207dp"
+        android:layout_width="0dp"
         android:layout_height="42dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="#BC4749"
-        android:text="Comprobar coordenadas"
+        android:text="Test Coordinates"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/space"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <Space
+        android:id="@+id/space"
+        android:layout_width="16dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/reportInfoButton"
+        app:layout_constraintStart_toEndOf="@+id/comprobarCoordenadas" />
+
     <Button
-        android:id="@+id/addMarker"
-        android:layout_width="170dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:layout_margin="16dp"
+        android:id="@+id/reportInfoButton"
+        android:layout_width="0dp"
+        android:layout_height="42dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="#BC4749"
-        android:text="Add Marker"
+        android:text="Go to Report Info"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/space" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
