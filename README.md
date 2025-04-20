@@ -87,7 +87,9 @@ This feature is currently under development, and the form is not yet fully funct
 </table>
 
 ## Demo Video
+
 <a href="https://www.youtube.com/watch?v=mvvYGKihuug">
+</a>
 
 ## Features
 List of **functional** features of the app.
